@@ -23,10 +23,14 @@ douglas_ui_automation/
 ├── tests/               # Test specifications
 │   └── Douglas_Filters.spec.ts
 ├── testdata/            # Test data files
-│   └── testData.ts
+│   └── douglasFilterTestData.ts
 ├── utility/             # Utility functions
 │   └── logger.ts        # Logging configuration
+├── logs/                # Test execution logs
+├── playwright-report/   # HTML test reports
+├── test-results/        # Test result artifacts
 ├── playwright.config.ts # Playwright configuration
+├── execution_base.env   # Environment configuration
 ├── package.json         # Project dependencies
 └── README.md            # This file
 ```
@@ -51,7 +55,7 @@ cd douglas_ui_automation
 npm install
 ```
 
-This installs `@playwright/test`, `playwright`, and `winston`.
+This installs `@playwright/test`, `playwright`, `winston`, and `dotenv`.
 
 ## Configuration
 
@@ -106,18 +110,20 @@ test("Test Name", async ({ page, homePage, perfumePage }, testinfo) => {
 ## Key Features
 
 - Filter verification across product pages (Perfume, Nue, Sale)
+- Page Object Model architecture
 - 40-second test timeout
-- Parallel execution (disabled on CI)
+- Parallel execution support
 - 2 retries on CI; none locally
 - Trace collection on first retry
+- Multi-browser testing (Chromium, Firefox, WebKit)
+- Comprehensive logging with Winston
 
 ## Environment Setup
 
-Create `.env`:
+Create `execution_base.env`:
 
 ```
-BASE_URL=https://www.douglas.de
-LOG_LEVEL=info
+BASE_URL=https://www.douglas.de/de
 ```
 
 ## Troubleshooting
