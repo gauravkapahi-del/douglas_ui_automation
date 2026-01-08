@@ -1,8 +1,9 @@
-import { expect, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { CommonPage } from "../common/CommonPage";
 import { CommonScenario } from "../common/CommonScenario";
-import { testData } from "../testdata/testData";
+import { douglasFilterTestData } from "../testdata/douglasFilterTestData";
 import { homePageLocators } from "../locators/HomePageLocators";
+import { env } from "node:process";
 
 export class HomePage extends CommonPage {
   constructor(public page: Page, readonly scenario: CommonScenario) {
@@ -10,15 +11,13 @@ export class HomePage extends CommonPage {
   }
 
   async navigateToHomePage() {
-    await this.navigateTo(testData.qa);
-    await this.page.waitForLoadState("domcontentloaded");
+    await this.navigateTo(douglasFilterTestData.baseUrl);
+    await this.waitForDocumentReady()
   }
 
   async navigateToPerfume() {
-    await this.navigateTo("https://www.douglas.de/de/c/parfum/01");
-
-    // await this.page.locator(homePageLocators.perfumesLink).click();
-    await this.page.waitForLoadState("domcontentloaded");
+    await this.clickElement(homePageLocators.perfumesLink);
+    await this.waitForDocumentReady();
   }
 
   async acceptAllCookies() {
@@ -27,11 +26,11 @@ export class HomePage extends CommonPage {
 
   async navigateToNuePage() {
     await this.clickElement(homePageLocators.nueLink);
-    await this.page.waitForLoadState("domcontentloaded");
+    await this.waitForDocumentReady();
   }
 
   async navigateToSalePage() {
     await this.clickElement(homePageLocators.saleLink);
-    await this.page.waitForLoadState("domcontentloaded");
+    await this.waitForDocumentReady();
   }
 }

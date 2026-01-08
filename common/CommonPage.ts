@@ -1,10 +1,8 @@
-import { test, expect, Page, Locator } from "@playwright/test";
+import { expect, Page } from "@playwright/test";
 import { CommonScenario } from "./CommonScenario";
-import { promises } from "dns";
 import { getPageLogger } from "../utility/logger";
 
 export class CommonPage {
-  private dataMap = new Map();
   protected logger = getPageLogger("CommonPage");
 
   constructor(public page: Page, readonly scenario: CommonScenario) {
@@ -12,8 +10,7 @@ export class CommonPage {
   }
 
   public getValue(key: string) {
-    const value = this.scenario.getValue(key);
-    return value;
+    return this.scenario.getValue(key);
   }
 
   public setValue(key: string, value: string) {
@@ -46,11 +43,6 @@ export class CommonPage {
     }
   }
 
-  /**
-   * Wait for an element to be visible
-   * @param locator - The element locator
-   * @param timeout - Optional timeout in milliseconds
-   */
   async waitForElementVisible(
     locator: string,
     timeout: number = 10000
@@ -71,11 +63,6 @@ export class CommonPage {
     }
   }
 
-  /**
-   * Wait for an element to be clickable
-   * @param locator - The element locator
-   * @param timeout - Optional timeout in milliseconds
-   */
   async waitForElementClickable(
     locator: string,
     timeout: number = 10000
@@ -84,10 +71,6 @@ export class CommonPage {
     await expect(this.page.locator(locator)).toBeEnabled();
   }
 
-  /**
-   * Click on an element with wait
-   * @param locator - The element locator
-   */
   async clickElement(locator: string): Promise<void> {
     this.logger.debug("Attempting to click element", { locator });
     try {
@@ -97,6 +80,17 @@ export class CommonPage {
       this.logger.debug("Successfully clicked element", { locator });
     } catch (error) {
       this.logger.error("Failed to click element", error, { locator });
+      throw error;
+    }
+  }
+
+  async waitForDocumentReady(): Promise<void> {
+    this.logger.debug("Waiting for document to be ready");
+    try {
+      await this.page.waitForLoadState("domcontentloaded");
+      this.logger.debug("Document is ready");
+    } catch (error) {
+      this.logger.error("Document did not become ready", error);
       throw error;
     }
   }
@@ -135,11 +129,6 @@ export class CommonPage {
     }
   }
 
-  /**
-   * Fill input field with text
-   * @param locator - The input element locator
-   * @param text - Text to fill
-   */
   async fillInput(locator: string, text: string): Promise<void> {
     this.logger.debug("Filling input field", {
       locator,
@@ -162,20 +151,11 @@ export class CommonPage {
     await this.page.keyboard.type(text);
   }
 
-  /**
-   * Get text content from an element
-   * @param locator - The element locator
-   * @returns The text content
-   */
   async getElementText(locator: string): Promise<string> {
     await this.waitForElementVisible(locator);
     return (await this.page.locator(locator).textContent()) || "";
   }
 
-  /**
-   * Verify element is visible
-   * @param locator - The element locator
-   */
   async verifyElementVisible(locator: string): Promise<void> {
     this.logger.debug("Verifying element visibility", { locator });
     try {
@@ -198,11 +178,6 @@ export class CommonPage {
     }
   }
 
-  /**
-   * Verify element contains text
-   * @param locator - The element locator
-   * @param expectedText - Expected text content
-   */
   async verifyElementText(
     locator: string,
     expectedText: string
@@ -242,10 +217,6 @@ export class CommonPage {
     }
   }
 
-  /**
-   * Verify current page URL
-   * @param expectedUrl - Expected URL or URL pattern
-   */
   async verifyCurrentUrl(expectedUrl: string | RegExp): Promise<void> {
     this.logger.debug("Verifying current URL", {
       expectedUrl: expectedUrl.toString(),
@@ -261,9 +232,6 @@ export class CommonPage {
     }
   }
 
-  /**
-   * Wait for page to load completely
-   */
   async waitForPageLoad(): Promise<void> {
     await this.page.waitForLoadState("networkidle");
   }
@@ -301,7 +269,6 @@ export class CommonPage {
         .waitFor({ state: "hidden", timeout });
       this.logger.debug("Loader disappeared successfully");
     } catch (error) {
-      // If loader does not disappear within the timeout, log a warning but do not fail the test
       this.logger.warn(`Loader did not disappear within ${timeout} ms`);
     }
     await this.sleep(2);

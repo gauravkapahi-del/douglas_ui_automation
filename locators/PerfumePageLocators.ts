@@ -4,4 +4,5 @@ export const PerfumePageLocators = {
   markeSearchInput: 'input[name="facet-search"]',
   applyFilterButton:
     '(//div[@class="facets-mobile-template"]/button[@data-testid="button-primary"])[2]',
+  brandName: '//div[@class="text top-brand"]',
 };

@@ -1,7 +1,6 @@
-import { expect, Page } from "@playwright/test";
+import { Page } from "@playwright/test";
 import { CommonPage } from "../common/CommonPage";
 import { CommonScenario } from "../common/CommonScenario";
-import { testData } from "../testdata/testData";
 import { NuePageLocators } from "../locators/NuePageLocators";
 
 export class NuePage extends CommonPage {
