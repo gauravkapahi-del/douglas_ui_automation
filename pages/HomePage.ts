@@ -33,4 +33,9 @@ export class HomePage extends CommonPage {
     await this.clickElement(homePageLocators.saleLink);
     await this.waitForDocumentReady();
   }
+
+  async naviagteToLogin() {
+    await this.clickElement(homePageLocators.loginLink);
+    await this.waitForDocumentReady();
+  }
 }

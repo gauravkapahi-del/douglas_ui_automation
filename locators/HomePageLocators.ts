@@ -3,5 +3,7 @@ export const homePageLocators = {
     acceptAllCookiesButton: "button[data-testid='uc-accept-all-button']",
     nueLink: "//a[@href='/de/c/neuheiten/09']",
     saleLink: "//li[@data-uid='AppSaleNavNode']",
+    loginLink: "//span[@data-testid='header-component-item--favorite-store']/following-sibling::span[1]",
+
 
 }

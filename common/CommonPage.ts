@@ -253,8 +253,9 @@ export class CommonPage {
   }
 
   async sleep(seconds: number) {
-    return new Promise((resolve) => setTimeout(resolve, seconds * 1000));
-  }
+    // return new Promise((resolve) => setImmediate(() => setTimeout(resolve, seconds * 1000)));
+    return new Promise((resolve) => setTimeout(resolve, seconds * 1000)); 
+  } 
 
   async getTodayDate(): Promise<string> {
     const today = new Date();
@@ -271,6 +272,5 @@ export class CommonPage {
     } catch (error) {
       this.logger.warn(`Loader did not disappear within ${timeout} ms`);
     }
-    await this.sleep(2);
   }
 }

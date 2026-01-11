@@ -1,9 +1,10 @@
 import dotenv from "dotenv";
+import { env } from "process";
 
-dotenv.config({ path: "./execution_base.env" });
+dotenv.config({ path: "./.env" });
 
 export const douglasFilterTestData = {
-  baseUrl: process.env.BASE_URL || "",
+  baseUrl: env.BASE_URL as string,
   perfumeFilter: {
     marke: "adidas",
   },

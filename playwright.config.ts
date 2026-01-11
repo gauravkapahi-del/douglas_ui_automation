@@ -1,4 +1,6 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig, devices, PlaywrightTestConfig } from "@playwright/test";
+import { Status } from "allure-js-commons";
+import * as os from "node:os";
 
 /**
  * Read environment variables from file.
@@ -13,17 +15,37 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests",
-  timeout: 40 * 1000,
+  timeout: 60 * 1000,
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 0 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
+  /* Global teardown to close browser after all tests */
+  globalTeardown: require.resolve("./global-teardown.ts"),
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+
+  reporter: [
+    ["line"],
+    [
+      "allure-playwright",
+      {
+        resultsDir: "allure-results",
+        detail: true,
+        suiteTitle: true,
+        categories: true,
+        environmentInfo: {
+          os_platform: os.platform(),
+          os_release: os.release(),
+          os_version: os.version(),
+          node_version: process.version,
+        },
+      },
+    ],
+  ],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
@@ -31,6 +53,7 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
+    screenshot: "only-on-failure",
   },
 
   /* Configure projects for major browsers */
@@ -38,40 +61,48 @@ export default defineConfig({
     {
       name: "chromium",
       use: {
-        viewport: { width: 1920, height: 1080 },
+        launchOptions: {
+          slowMo: 2000,
+          channel: "chrome",
+        },
       },
     },
 
     {
       name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      use: {
+        launchOptions: {
+          slowMo: 2000,
+        },
+      },
     },
 
     {
       name: "webkit",
       use: { ...devices["Desktop Safari"] },
     },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
+
+  //   /* Test against mobile viewports. */
+  //   // {
+  //   //   name: 'Mobile Chrome',
+  //   //   use: { ...devices['Pixel 5'] },
+  //   // },
+  //   // {
+  //   //   name: 'Mobile Safari',
+  //   //   use: { ...devices['iPhone 12'] },
+  //   // },
+
+  //   /* Test against branded browsers. */
+  //   // {
+  //   //   name: 'Microsoft Edge',
+  //   //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
+  //   // },
+  //   // {
+  //   //   name: 'Google Chrome',
+  //   //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+  //   // },
+  // ],
 
   /* Run your local dev server before starting the tests */
   // webServer: {
