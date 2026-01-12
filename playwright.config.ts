@@ -62,6 +62,7 @@ export default defineConfig({
       name: "chromium",
       use: {
         launchOptions: {
+          //headless:false,
           slowMo: 2000,
           channel: "chrome",
         },
@@ -72,6 +73,7 @@ export default defineConfig({
       name: "firefox",
       use: {
         launchOptions: {
+          //headless:false,
           slowMo: 2000,
         },
       },

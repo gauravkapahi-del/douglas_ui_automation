@@ -225,7 +225,6 @@ The Perfume page (and potentially other pages) are unable to load product listin
 **Impact**: Tests that validate product listings may fail or show empty results.
 ![alt text](Error.png)
 
-**Workaround**: Consider using headless mode with realistic browser agents or implementing retry logic with exponential backoff.
 
 ### Related Artifacts
 
